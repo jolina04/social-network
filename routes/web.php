@@ -40,4 +40,3 @@ Route::get('/submit', function () {
 
 
 Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
