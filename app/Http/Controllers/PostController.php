@@ -8,14 +8,14 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 use App\Post;
 
 class PostController extends Controller
 {
     public function getDashboard()
     {
-        $posts = Post::all();
+        $posts = Post::orderBy('created_at', 'desc')->get();
         return view('dashboard', ['posts' => $posts]);
     }
     public function postCreatePost(Request $request)
@@ -37,6 +37,9 @@ class PostController extends Controller
     {
         $post = Post::where('id', $post_id)->first();
         //$post = PoST::find($post_id)->first(); alternative way
+        if(Auth::user() != $post->user){
+            return redirect()->back();
+        }
         $post->delete();
         return redirect()->route('dashboard')->with(['message' => 'Successfully Deleted Post!']);
     }

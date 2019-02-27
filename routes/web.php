@@ -44,6 +44,11 @@ Route::group(['middleware' => ['web']], function(){
         'as'   => 'post.delete',
         'middleware' => 'auth'
     ]);
+
+    Route::get('/logout', [
+       'uses' => 'UserController@getLogout',
+       'as' => 'logout'
+    ]);
 });
 
 Route::get('/submit', function () {
