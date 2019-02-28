@@ -22,16 +22,16 @@
         <div class="col-md-6 col-md-offset-3">
             <header><h3>What other people say...</h3></header>
             @foreach($posts as $post)
-                <article class="post">
+                <article class="post" data-postid="{{$post->id}}">
                     <p>{{$post->body}}</p>
                     <div class="info">
                         Posted by {{$post->user->first_name}} on {{$post->created_at}}
                     </div>
                     <div class="interaction">
-                        <a href="#">Like</a> |
-                        <a href="#">Dislike</a> |
+                        <a href="#" class="like">Like</a> |
+                        <a href="#" class="like">Dislike</a> |
                         @if(Auth::user() == $post->user)
-                            <a href="#">Edit</a> |
+                            <a href="#" class="edit">Edit</a> |
                             <a href="{{route('post.delete', ['post_id' => $post->id])}}">Delete</a>
                         @endif
                     </div>
@@ -49,13 +49,24 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Modal body text goes here.</p>
+                    <form>
+                        <div class="form-group">
+                            <label for="post-body"></label>
+                            <textarea class="form-control" id="post-body" name="post-body" cols="30" rows="5"></textarea>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="modal-save">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        let token = '{{Session::token()}}';
+        let url = '{{route('edit')}}';
+        let urlLike = '{{route('like')}}';
+    </script>
 @endsection
