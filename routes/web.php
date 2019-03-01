@@ -60,9 +60,15 @@ Route::group(['middleware' => ['web']], function(){
        'as' => 'account.save'
     ]);
 
-    Route::post('edit', [
+    Route::post('/edit', [
         'uses' => 'PostController@postEditPost',
         'as' => 'edit',
+        'middleware' => 'auth'
+    ]);
+
+    Route::post('/like', [
+        'uses' => 'PostController@postLikePost',
+        'as' => 'like',
         'middleware' => 'auth'
     ]);
 

@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Post;
+use App\Like;
 
 class PostController extends Controller
 {
@@ -44,7 +45,8 @@ class PostController extends Controller
         return redirect()->route('dashboard')->with(['message' => 'Successfully Deleted Post!']);
     }
 
-    public function postEditPost(Request $request){
+    public function postEditPost(Request $request)
+    {
         $this->validate($request,[
            'body' => 'required'
         ]);
@@ -55,5 +57,44 @@ class PostController extends Controller
         $post->body = $request['body'];
         $post->update();
         return response()->json(['new_body' => $post->body],200);
+    }
+
+    public function postLikePost(Request $request)
+    {
+        $post_id = $request['postId'];
+        $is_like = $request['isLike'] === 'true' ? true : false;
+        $update = false;
+
+        //retrieve post
+        $post = Post::find($post_id);
+
+        //check if post does exist
+        if(!$post){
+            return null;
+        }
+
+
+        $user = Auth::user();
+        //check if you already liked the post
+        $like = $user->likes()->where('post_id', $post_id)->first();
+        if($like){
+            $already_like = $like->like;
+            $update = true;
+            if($already_like == $is_like){
+                $like->delete();
+                return null;
+            }
+        }else{
+            $like = new Like();
+        }
+        $like->like = $is_like;
+        $like->user_id = $user->id;
+        $like->post_id = $post->id;
+        if($update){
+            $like->update();
+        }else{
+            $like->save();
+        }
+        return null;
     }
  }
